@@ -3,78 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BTC Price Prediction Tool</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+  <title>Bitcoin Price Prediction</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/technicalindicators@3.0.0/dist/browser/technicalindicators.min.js"></script>
+  <script src="script.js" defer></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 30px;
-      background: #f9f9f9;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
     }
-    h2 {
-      color: #333;
+    .container {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
     }
-    label, input {
-      font-size: 16px;
+    .left, .right {
+      width: 48%;
     }
     input {
-      margin-bottom: 10px;
-      padding: 5px;
-      width: 250px;
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
     }
     button {
-      padding: 8px 20px;
-      font-size: 16px;
+      padding: 8px 16px;
     }
-    #predictionResult {
-      font-size: 18px;
+    .result {
       margin-top: 20px;
-      color: #333;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .emoji {
+      font-size: 1.2em;
+      margin-right: 5px;
+    }
+    .highlight {
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <h2>Bitcoin Price Prediction</h2>
+  <div class="container">
+    <div class="left">
+      <label>🎯 Target Price (USDT):</label><br />
+      <input type="number" id="target-price" placeholder="e.g. 103900" /><br />
+      <label>🕒 Target Time (dd.mm.yyyy hh:mm):</label><br />
+      <input type="text" id="target-time" placeholder="14.06.2025 18:45" /><br />
+      <button onclick="predictPrice()">Predict</button>
 
-  <div style="display: flex; gap: 40px;">
-    <!-- Prediction Form -->
-    <div style="flex: 1;">
-      <label>🎯 Target Price (USDT):</label><br/>
-      <input type="number" id="targetPrice" /><br/>
-
-      <label>🕒 Target Time (dd.mm.yyyy hh:mm):</label><br/>
-      <input type="text" id="targetTime" placeholder="14.06.2025 17:40" /><br/>
-
-      <button onclick="predict()">Predict</button>
-
-      <div id="predictionResult" style="margin-top: 20px;"></div>
+      <div class="result" id="prediction-result"></div>
     </div>
 
-    <!-- TradingView Chart -->
-    <div style="flex: 1;">
-      <div class="tradingview-widget-container">
-        <div id="tradingview_chart"></div>
-      </div>
+    <div class="right">
+      <!-- TradingView Widget -->
+      <div id="tv-widget-container" style="height: 400px;"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+      <script type="text/javascript">
+        new TradingView.widget({
+          autosize: true,
+          symbol: "BINANCE:BTCUSDT",
+          interval: "1",
+          timezone: "Asia/Kolkata",
+          theme: "light",
+          style: "1",
+          locale: "en",
+          toolbar_bg: "#f1f3f6",
+          enable_publishing: false,
+          allow_symbol_change: true,
+          container_id: "tv-widget-container"
+        });
+      </script>
     </div>
   </div>
-
-  <script src="https://s3.tradingview.com/tv.js"></script>
-  <script>
-    new TradingView.widget({
-      width: "100%",
-      height: 400,
-      symbol: "BINANCE:BTCUSDT",
-      interval: "1",
-      timezone: "Etc/UTC",
-      theme: "light",
-      style: "1",
-      locale: "en",
-      toolbar_bg: "#f1f3f6",
-      enable_publishing: false,
-      container_id: "tradingview_chart"
-    });
-  </script>
-
-  <script src="script.js"></script>
 </body>
 </html>
