@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BTC Price Prediction Tool</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+  <h2>Bitcoin Price Prediction</h2>
+  <label>Target Price (USDT):</label>
+  <input type="number" id="targetPrice" /><br/><br/>
+  <label>Target Time (dd.mm.yyyy hh:mm):</label>
+  <input type="text" id="targetTime" placeholder="14.06.2025 23:40" /><br/><br/>
+  <button onclick="predict()">Predict</button>
+  <h3 id="predictionResult"></h3>
+  <canvas id="btcChart" width="600" height="300"></canvas>
+
+  <script src="script.js"></script>
+</body>
+</html>
