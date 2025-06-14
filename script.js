@@ -36,7 +36,6 @@ function getConfidence(prices, ema, rsi, currentPrice, targetPrice) {
   const recentChange = (prices[prices.length - 1] - prices[prices.length - 6]) / prices[prices.length - 6];
 
   let score = 0;
-
   if (emaNow > currentPrice) score += 1;
   if (rsi < 50) score += 1;
   if (recentChange > 0.0015) score += 1;
@@ -50,6 +49,23 @@ function getConfidence(prices, ema, rsi, currentPrice, targetPrice) {
   return { prediction, confidence };
 }
 
+// ⚙️ TensorFlow.js Simulated Prediction
+function normalize(arr) {
+  const min = Math.min(...arr);
+  const max = Math.max(...arr);
+  return arr.map(x => (x - min) / (max - min));
+}
+
+async function tfPredict(prices) {
+  const input = tf.tensor2d([normalize(prices.slice(-30))]);
+  const weights = tf.tensor2d([0.1, 0.15, 0.2, 0.25, 0.3], [1, 5]); // Simulated logic
+  const sliced = tf.slice(input, [0, 25], [1, 5]);
+  const prediction = tf.matMul(sliced, weights, false, true);
+  const result = (await prediction.data())[0];
+  return result > 0.5 ? "Uptrend Likely" : "Downtrend Likely";
+}
+
+// 🔮 Final Prediction Trigger
 async function predict() {
   const targetPrice = parseFloat(document.getElementById("targetPrice").value);
   const targetTime = document.getElementById("targetTime").value;
@@ -66,11 +82,13 @@ async function predict() {
   const rsi = calculateRSI(prices);
 
   const { prediction, confidence } = getConfidence(prices, ema, rsi, currentPrice, targetPrice);
+  const tfTrend = await tfPredict(prices);
 
   document.getElementById("predictionResult").innerHTML = `
     📌 Prediction: Will price be <b>ABOVE</b> ${targetPrice} at <b>${targetTime}</b>? — <b>${prediction}</b><br/>
     🔎 Confidence: <b>${confidence}%</b><br/>
     💹 Current Price: <b>${currentPrice.toFixed(2)}</b><br/>
-    📈 EMA(14): <b>${ema[ema.length - 1].toFixed(2)}</b> | RSI(14): <b>${rsi.toFixed(2)}</b>
+    📈 EMA(14): <b>${ema[ema.length - 1].toFixed(2)}</b> | RSI(14): <b>${rsi.toFixed(2)}</b><br/>
+    🤖 ML Forecast: <b>${tfTrend}</b>
   `;
 }
