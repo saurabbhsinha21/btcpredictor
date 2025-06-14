@@ -1,33 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Bitcoin Price Prediction</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BTC Price Prediction Tool</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f9f9f9;
+    }
+    h2 {
+      color: #333;
+    }
+    label, input {
+      font-size: 16px;
+    }
+    input {
+      margin-bottom: 10px;
+      padding: 5px;
+      width: 250px;
+    }
+    button {
+      padding: 8px 20px;
+      font-size: 16px;
+    }
+    #predictionResult {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <div class="left">
-      <h2>Bitcoin Price Prediction</h2>
-      <label>
-        <span>🎯 Target Price (USDT):</span>
-        <input type="number" id="target-price" placeholder="e.g. 104800">
-      </label>
-      <label>
-        <span>⏰ Target Time (dd.mm.yyyy hh:mm):</span>
-        <input type="text" id="target-time" placeholder="14.06.2025 18:45">
-      </label>
-      <button onclick="predictPrice()">Predict</button>
-      <div id="prediction-result"></div>
+  <h2>Bitcoin Price Prediction</h2>
+
+  <div style="display: flex; gap: 40px;">
+    <!-- Prediction Form -->
+    <div style="flex: 1;">
+      <label>🎯 Target Price (USDT):</label><br/>
+      <input type="number" id="targetPrice" /><br/>
+
+      <label>🕒 Target Time (dd.mm.yyyy hh:mm):</label><br/>
+      <input type="text" id="targetTime" placeholder="14.06.2025 17:40" /><br/>
+
+      <button onclick="predict()">Predict</button>
+
+      <div id="predictionResult" style="margin-top: 20px;"></div>
     </div>
 
-    <div class="right">
-      <div id="tv-widget"></div>
+    <!-- TradingView Chart -->
+    <div style="flex: 1;">
+      <div class="tradingview-widget-container">
+        <div id="tradingview_chart"></div>
+      </div>
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://unpkg.com/technicalindicators@3.0.0/dist/browser/technicalindicators.min.js"></script>
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <script>
+    new TradingView.widget({
+      width: "100%",
+      height: 400,
+      symbol: "BINANCE:BTCUSDT",
+      interval: "1",
+      timezone: "Etc/UTC",
+      theme: "light",
+      style: "1",
+      locale: "en",
+      toolbar_bg: "#f1f3f6",
+      enable_publishing: false,
+      container_id: "tradingview_chart"
+    });
+  </script>
+
   <script src="script.js"></script>
 </body>
 </html>
