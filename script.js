@@ -92,6 +92,7 @@ async function predict() {
     🤖 ML Forecast: <b>${tfTrend}</b>
   `;
 }
+
 // 🔄 Live Price Auto-Refresh (Every 5 seconds)
 setInterval(async () => {
   const data = await fetchBTCData();
