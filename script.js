@@ -92,3 +92,17 @@ async function predict() {
     🤖 ML Forecast: <b>${tfTrend}</b>
   `;
 }
+// 🔄 Live Price Auto-Refresh (Every 5 seconds)
+setInterval(async () => {
+  const data = await fetchBTCData();
+  const currentPrice = data[data.length - 1].close;
+
+  const resultDiv = document.getElementById("predictionResult");
+  if (resultDiv.innerHTML.includes("Current Price")) {
+    const updated = resultDiv.innerHTML.replace(
+      /Current Price: <b>[0-9.]+<\/b>/,
+      `Current Price: <b>${currentPrice.toFixed(2)}</b>`
+    );
+    resultDiv.innerHTML = updated;
+  }
+}, 5000);
