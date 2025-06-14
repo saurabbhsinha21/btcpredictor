@@ -31,23 +31,23 @@ function calculateRSI(prices, period = 14) {
   return 100 - (100 / (1 + rs));
 }
 
-function predictTrend(prices, ema, rsi, currentPrice, targetPrice) {
+function getConfidence(prices, ema, rsi, currentPrice, targetPrice) {
   const emaNow = ema[ema.length - 1];
   const recentChange = (prices[prices.length - 1] - prices[prices.length - 6]) / prices[prices.length - 6];
 
-  // Confidence-based rule logic
   let score = 0;
 
   if (emaNow > currentPrice) score += 1;
   if (rsi < 50) score += 1;
-  if (recentChange > 0) score += 1;
-  if (recentChange > 0.002) score += 1;
+  if (recentChange > 0.0015) score += 1;
+  if (Math.abs(targetPrice - currentPrice) / currentPrice < 0.01) score += 1;
 
-  if (targetPrice > currentPrice) {
-    return score >= 2 ? "Yes" : "No";
-  } else {
-    return score <= 1 ? "Yes" : "No";
-  }
+  const confidence = Math.min(Math.round((score / 4) * 100), 95);
+  const prediction = (targetPrice > currentPrice && score >= 2) || (targetPrice < currentPrice && score <= 1)
+    ? "Yes"
+    : "No";
+
+  return { prediction, confidence };
 }
 
 async function predict() {
@@ -62,13 +62,15 @@ async function predict() {
   const data = await fetchBTCData();
   const prices = data.map(d => d.close);
   const currentPrice = prices[prices.length - 1];
-  const ema = calculateEMA(prices, 14);
-  const rsi = calculateRSI(prices, 14);
+  const ema = calculateEMA(prices);
+  const rsi = calculateRSI(prices);
 
-  const prediction = predictTrend(prices, ema, rsi, currentPrice, targetPrice);
+  const { prediction, confidence } = getConfidence(prices, ema, rsi, currentPrice, targetPrice);
 
   document.getElementById("predictionResult").innerHTML = `
-    📌 Prediction: Will price be <b>ABOVE</b> ${targetPrice} at <b>${targetTime}</b>? — <b>${prediction}</b><br/><br/>
-    Current Price: ${currentPrice.toFixed(2)} | RSI: ${rsi.toFixed(2)} | EMA: ${ema[ema.length - 1].toFixed(2)}
+    📌 Prediction: Will price be <b>ABOVE</b> ${targetPrice} at <b>${targetTime}</b>? — <b>${prediction}</b><br/>
+    🔎 Confidence: <b>${confidence}%</b><br/>
+    💹 Current Price: <b>${currentPrice.toFixed(2)}</b><br/>
+    📈 EMA(14): <b>${ema[ema.length - 1].toFixed(2)}</b> | RSI(14): <b>${rsi.toFixed(2)}</b>
   `;
 }
