@@ -1,8 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BTC Price Prediction Tool</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f9f9f9;
+    }
+    h2 {
+      color: #333;
+    }
+    label, input {
+      font-size: 16px;
+    }
+    input {
+      margin-bottom: 10px;
+      padding: 5px;
+      width: 250px;
+    }
+    button {
+      padding: 8px 20px;
+      font-size: 16px;
+    }
+    #predictionResult {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #333;
+    }
+  </style>
+</head>
 <body>
   <h2>Bitcoin Price Prediction</h2>
 
   <div style="display: flex; gap: 40px;">
-    <!-- 🧠 Prediction Panel -->
+    <!-- Prediction Form -->
     <div style="flex: 1;">
       <label>🎯 Target Price (USDT):</label><br/>
       <input type="number" id="targetPrice" /><br/>
@@ -15,7 +50,7 @@
       <div id="predictionResult" style="margin-top: 20px;"></div>
     </div>
 
-    <!-- 📈 TradingView Chart -->
+    <!-- TradingView Chart -->
     <div style="flex: 1;">
       <div class="tradingview-widget-container">
         <div id="tradingview_chart"></div>
@@ -42,3 +77,4 @@
 
   <script src="script.js"></script>
 </body>
+</html>
